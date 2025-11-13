@@ -1,5 +1,7 @@
 # TBA
 
+Un jeu d'infiltration dans un paquebot luxueux allant de Paris à Londres, réunissant des puissants et des membres du gouvernements des deux pays pour un sommet aux enjeux économiques et politiques.
+
 Ce repo contient la première version (minimale) du jeu d’aventure TBA.
 
 Les lieux sont au nombre de 6. Il n'y a pas encore d’objets ni de personnages autres que le joueur et très peu d’interactions. Cette première version sert de base à ce qui va suivre, et sera améliorée au fur et à mesure.
