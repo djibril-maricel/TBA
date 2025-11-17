@@ -30,32 +30,44 @@ class Game:
         
         # Setup rooms
 
-        forest = Room("Forest", "une forêt enchantée. Vous entendez une brise légère à travers la cime des arbres.")
-        self.rooms.append(forest)
-        tower = Room("Tower", "une immense tour en pierre qui s'élève au dessus des nuages.")
-        self.rooms.append(tower)
-        cave = Room("Cave", "une grotte profonde et sombre. Des voix semblent provenir des profondeurs.")
-        self.rooms.append(cave)
-        cottage = Room("Cottage", "un petit chalet pittoresque avec un toit de chaume. Une épaisse fumée verte sort de la cheminée.")
-        self.rooms.append(cottage)
-        swamp = Room("Swamp", "un marécage sombre et ténébreux. L'eau bouillonne, les abords sont vaseux.")
-        self.rooms.append(swamp)
-        castle = Room("Castle", "un énorme château fort avec des douves et un pont levis. Sur les tours, des flèches en or massif.")
-        self.rooms.append(castle)
+        pont_superieur = Room("Pont_superieur", "sur le pont supérieur. D'ici, vous pouvez contempler la nuit étoilée et la plaine lune.")
+        self.rooms.append(pont_superieur)
+        salle_de_video_surveillance = Room("Salle_de_video_surveillance", "dans la salle de vidéo-surveillance. Il y a deux employés regardant les dizaines de caméras suveillant la soirée.")
+        self.rooms.append(salle_de_video_surveillance)
+        pont_exterieur = Room("Pont_exterieur", "sur le pont extérieur. Vous sentez une légère brise maritime au milieu des autres convives.")
+        self.rooms.append(pont_exterieur)
+        salle_de_reception = Room("Salle_de_reception", "dans la salle de réception. Il y a beaucoup de beau monde qui festoie autour de tables recouvertes d'amuses-bouches.")
+        self.rooms.append(salle_de_reception)
+        restaurant = Room("Restaurant", "dans le restaurant ouvert pour la soirée. L'ambiance est plus calme, homard et champagne sont au menu du soir.")
+        self.rooms.append(restaurant)
+        chambre = Room("Chambre", "dans votre chambre. Quelques affaires sont posés au pied de votre lit et dans vos rangements.")
+        self.rooms.append(chambre)
+        salle_de_bains = Room("Salle_de_bains", "dans votre salle de bains. vous avez à votre disposition une baignoire et un lavabo.")
+        self.rooms.append(salle_de_bains)
+        chambre_John_Dupont = Room("Chambre_John_Dupont", "dans la chambre du VIP. Similaire à la vôtre, mais en plus grand et avec du mobilier en marbre.")
+        self.rooms.append(chambre_John_Dupont)
+        salle_des_machines = Room("Salle_des_machines", "dans la salle des machines. Il y a beaucoup de grosses machines et de gros tuyaux les reliant. Il y a une porte au fond.")
+        self.rooms.append(salle_des_machines)
+        salle_des_serveurs = Room("Salle_des_serveurs", "enfin dans la salle des serveurs ! Ces gigantesques machines contiennent les données qui vous intéressent.")
+        self.rooms.append(salle_des_serveurs)
 
         # Create exits for rooms
 
-        forest.exits = {"N" : cave, "E" : None, "S" : castle, "O" : None}
-        tower.exits = {"N" : cottage, "E" : None, "S" : None, "O" : None}
-        cave.exits = {"N" : None, "E" : cottage, "S" : forest, "O" : None}
-        cottage.exits = {"N" : None, "E" : None, "S" : tower, "O" : cave}
-        swamp.exits = {"N" : tower, "E" : None, "S" : None, "O" : castle}
-        castle.exits = {"N" : forest, "E" : swamp, "S" : None, "O" : None}
+        chambre.exits = {"N" : None, "E" : chambre_John_Dupont, "S" : salle_de_bains, "O" : None, "U" : salle_de_reception, "D" : salle_des_machines}
+        salle_de_bains.exits = {"N" : chambre, "E" : None, "S" : None, "O" : None, "U" : None, "D" : None}
+        chambre_John_Dupont.exits = {"N" : None, "E" : None, "S" : None, "O" : chambre, "U" : None, "D" : None}
+        salle_de_reception.exits = {"N" : pont_exterieur, "E" : restaurant, "S" : None, "O" : None, "U" : pont_superieur, "D" : chambre}
+        pont_exterieur.exits = {"N" : None, "E" : restaurant, "S" : None, "O" : salle_de_reception, "U" : None, "D" : None}
+        restaurant.exits = {"N" : pont_exterieur, "E" : None, "S" : None, "O" : salle_de_reception, "U" : None, "D" : None}
+        pont_superieur.exits = {"N" : None, "E" : None, "S" : salle_de_video_surveillance, "O" : None, "U" : None, "D" : salle_de_reception}
+        salle_de_video_surveillance.exits = {"N" : pont_superieur, "E" : None, "S" : None, "O" : None, "U" : None, "D" : None}
+        salle_des_machines.exits = {"N" : None, "E" : None, "S" : salle_des_serveurs, "O" : None, "U" : chambre, "D" : None}
+        salle_des_serveurs.exits = {"N" : salle_des_machines, "E" : None, "S" : None, "O" : None, "U" : None, "D" : None}
 
         # Setup player and starting room
 
         self.player = Player(input("\nEntrez votre nom: "))
-        self.player.current_room = swamp
+        self.player.current_room = chambre
 
     # Play the game
     def play(self):
@@ -89,7 +101,11 @@ class Game:
 
     # Print the welcome message
     def print_welcome(self):
-        print(f"\nBienvenue {self.player.name} dans ce jeu d'aventure !")
+        print(f"\nBienvenue {self.player.name} dans ce jeu d'espionnage !\
+              \nVous êtes invité à la grande réception qui se tient ce soir dans la salle de réception.\
+              \nIl s'y trouve quelques milliardaires et des ministres des deux villes que relient ce paquebot : Paris et Londres.\
+              \nVotre objectif est de vous rendre dans la salle des machines, et de télécharger des données concernant un complot entre \
+              \nle milliardaire Parisien John Dupont et le 1er ministre du Royaume-uni sans vous faire repérer. Bonne chance !")
         print("Entrez 'help' si vous avez besoin d'aide.")
         #
         print(self.player.current_room.get_long_description())
