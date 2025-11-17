@@ -1,6 +1,33 @@
 # Define the Room class.
 
 class Room:
+    """
+    This class represents a room. A room is composed of a command word, a help string, an action and a number of parameters.
+
+    Attributes:
+        name (str): The name.
+        description (str): The description.
+        exits (dict): The action to exit a room.
+
+    Methods:
+        __init__(self, name, description) : The constructor.
+
+    Examples:
+
+    >>> room = Room("Swamp", "dans un marécage sombre et ténébreux. L'eau bouillonne, les abords sont vaseux.")
+    >>> room.name
+    'Swamp'
+    >>> room.description 
+    "dans un marécage sombre et ténébreux. L'eau bouillonne, les abords sont vaseux."
+    >>> room.exits
+    {}
+    >>> type(room.name)
+    <class 'str'>
+    >>> type(room.description)
+    <class 'str'>
+    >>> type(room.exits)
+    <class 'dict'>
+    """
 
     # Define the constructor. 
     def __init__(self, name, description):
