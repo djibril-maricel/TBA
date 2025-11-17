@@ -1,5 +1,25 @@
 # Define the Player class.
 class Player():
+    """
+    This class represents a player. A player is composed of a name.
+
+    Attributes:
+        name (str): The player's name.
+
+    Methods:
+        __init__(self, name) : The constructor.
+        __str__(self) : The string representation of the command.
+        move(self, direction) : Permit to the player to move in another room.
+
+    Examples:
+
+    >>> player = Player("Antonin")
+    >>> player.name
+    'Antonin'
+    >>> type(player.name)
+    <class 'str'>
+
+    """
 
     # Define the constructor.
     def __init__(self, name):
