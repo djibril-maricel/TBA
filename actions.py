@@ -55,6 +55,7 @@ class Actions:
 
         # Get the direction from the list of words.
         direction = list_of_words[1]
+        # match the upper of direction to put the 1st letter of the direction
         match direction.upper():
             case ("N" | "NORD"):
                 direction = "N"
@@ -69,10 +70,12 @@ class Actions:
             case "D" | "DOWN":
                 direction = "D"
 
+        # Compare the direction with the list of directions acccepted
         directions = set(['N', 'E', 'S', 'O', 'U', 'D'])
         if not direction in directions :
             print("\nLa direction '" +direction+ "' n'est pas valide.\n")
             return False
+        
         # Move the player in the direction specified by the parameter.
         player.move(direction)
         return True
