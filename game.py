@@ -27,6 +27,8 @@ class Game:
         self.commands["quit"] = quit
         go = Command("go", " <direction> : se déplacer dans une direction cardinale (N, E, S, O)", Actions.go, 1)
         self.commands["go"] = go
+        history= Command("history", " : afficher l'historique des salles visitées", Actions.history, 0)
+        self.commands["history"] = history
         
         # Setup rooms
 
@@ -44,11 +46,11 @@ class Game:
         self.rooms.append(chambre)
         salle_de_bains = Room("Salle_de_bains", "dans votre salle de bains. vous avez à votre disposition une baignoire et un lavabo.")
         self.rooms.append(salle_de_bains)
-        chambre_John_Dupont = Room("Chambre_John_Dupont", "dans la chambre du VIP. Similaire à la vôtre, mais en plus grand et avec du mobilier en marbre.")
+        chambre_John_Dupont = Room("Chambre_John_Dupont", "dans la chambre de John Dupont. Similaire à la vôtre, mais en plus grand et avec du mobilier en marbre.")
         self.rooms.append(chambre_John_Dupont)
         salle_des_machines = Room("Salle_des_machines", "dans la salle des machines. Il y a beaucoup de grosses machines et de gros tuyaux les reliant. Il y a une porte au fond.")
         self.rooms.append(salle_des_machines)
-        salle_des_serveurs = Room("Salle_des_serveurs", "enfin dans la salle des serveurs ! Ces gigantesques machines contiennent les données qui vous intéressent.")
+        salle_des_serveurs = Room("Salle_des_serveurs", "dans la salle des serveurs. Ces gigantesques machines contiennent les données qui vous intéressent.")
         self.rooms.append(salle_des_serveurs)
 
         # Create exits for rooms
@@ -105,7 +107,7 @@ class Game:
               \nVous êtes invité à la grande réception qui se tient ce soir dans la salle de réception.\
               \nIl s'y trouve quelques milliardaires et des ministres des deux villes que relient ce paquebot : Paris et Londres.\
               \nVotre objectif est de vous rendre dans la salle des machines, et de télécharger des données concernant un complot entre \
-              \nle milliardaire Parisien John Dupont et le 1er ministre du Royaume-uni sans vous faire repérer. Bonne chance !")
+              \nle milliardaire parisien John Dupont et le 1er ministre du Royaume-uni sans vous faire repérer. Bonne chance !")
         print("Entrez 'help' si vous avez besoin d'aide.")
         #
         print(self.player.current_room.get_long_description())

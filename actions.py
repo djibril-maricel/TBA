@@ -55,6 +55,27 @@ class Actions:
 
         # Get the direction from the list of words.
         direction = list_of_words[1]
+        # match the upper of direction to put the 1st letter of the direction
+        match direction.upper():
+            case ("N" | "NORD"):
+                direction = "N"
+            case "S" | "SUD":
+                direction =  "S"
+            case "E" | "EST":
+                direction = "E"
+            case "O" | "OUEST":
+                direction = "O"
+            case "U" | "UP":
+                direction = "U"
+            case "D" | "DOWN":
+                direction = "D"
+
+        # Compare the direction with the list of directions acccepted
+        directions = set(['N', 'E', 'S', 'O', 'U', 'D'])
+        if not direction in directions :
+            print("\nLa direction '" +direction+ "' n'est pas valide.\n")
+            return False
+        
         # Move the player in the direction specified by the parameter.
         player.move(direction)
         return True
@@ -135,5 +156,21 @@ class Actions:
         print("\nVoici les commandes disponibles:")
         for command in game.commands.values():
             print("\t- " + str(command))
+        print()
+        return True
+    
+    def history(game, list_of_words, number_of_parameters):
+        # If the number of parameters is incorrect, print an error message and return False.
+        l = len(list_of_words)
+        if l != number_of_parameters + 1:
+            command_word = list_of_words[0]
+            print(MSG0.format(command_word=command_word))
+            return False
+        
+        # Print the history of the player.
+        player = game.player
+        print("\nVoici l'historique des pièces visitées :")
+        for values in player.history:
+            print("\t- " + values.description)
         print()
         return True
