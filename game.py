@@ -6,6 +6,7 @@ from room import Room
 from player import Player
 from command import Command
 from actions import Actions
+from item import Item
 
 class Game:
 
@@ -29,6 +30,14 @@ class Game:
         self.commands["go"] = go
         history= Command("history", " : afficher l'historique des salles visitées", Actions.history, 0)
         self.commands["history"] = history
+        check= Command("check", " : afficher l'inventaire du joueur", Actions.player_inventory, 0)
+        self.commands["check"] = check
+        look= Command("look", " : afficher Les objets présents dans la pièce", Actions.room_inventory, 0)
+        self.commands["look"] = look
+        take= Command("take", " : prendre un objet présent dans la pièce", Actions.take, 1)
+        self.commands["take"] = take
+        drop= Command("drop", " : reposer un objet dans la pièce", Actions.drop, 1)
+        self.commands["drop"] = drop
         
         # Setup rooms
 
@@ -65,6 +74,11 @@ class Game:
         salle_de_video_surveillance.exits = {"N" : pont_superieur, "E" : None, "S" : None, "O" : None, "U" : None, "D" : None}
         salle_des_machines.exits = {"N" : None, "E" : None, "S" : salle_des_serveurs, "O" : None, "U" : chambre, "D" : None}
         salle_des_serveurs.exits = {"N" : salle_des_machines, "E" : None, "S" : None, "O" : None, "U" : None, "D" : None}
+
+        # Create inventory for rooms
+
+        chambre.inventory = {"" : Item("téléphone", "pour rester joignable durant votre mission", 0.2),
+                              "trop_lourd" : Item("trop_lourd", "pour tester la limite de poids", 999.9)}
 
         # Setup player and starting room
 

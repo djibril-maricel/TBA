@@ -1,4 +1,7 @@
 # Define the Player class.
+
+from item import Item
+
 class Player():
     """
     This class represents a player. A player is composed of a name.
@@ -26,6 +29,8 @@ class Player():
         self.name = name
         self.current_room = None
         self.history = []
+        self.inventory = {}
+        self.max_weight = 1000
     
     # Define the move method.
     def move(self, direction):
@@ -44,4 +49,8 @@ class Player():
         print(self.current_room.get_long_description())
         return True
 
-    
+    def sum_weight(self):
+        sum = 0
+        for elem in self.inventory.values():
+            sum = sum + Item.get_weight(elem)
+        return sum
