@@ -15,6 +15,7 @@
 MSG0 = "\nLa commande '{command_word}' ne prend pas de paramètre.\n"
 # The MSG1 variable is used when the command takes 1 parameter.
 MSG1 = "\nLa commande '{command_word}' prend 1 seul paramètre.\n"
+from item import Item
 
 class Actions:
 
@@ -174,3 +175,98 @@ class Actions:
             print("\t- " + values.description)
         print()
         return True
+    
+    def player_inventory(game, list_of_words, number_of_parameters):
+        # If the number of parameters is incorrect, print an error message and return False.
+        l = len(list_of_words)
+        if l != number_of_parameters + 1:
+            command_word = list_of_words[0]
+            print(MSG0.format(command_word=command_word))
+            return False
+        
+        # Print the inventory of the player ,or nothing if the inventory is empty
+        player = game.player
+        if not player.inventory:
+            print("Votre inventaire est vide.")
+        else:
+            print("\nVous disposez des items suivants :")
+            for values in player.inventory.values():
+                print("\t- " + str(values))
+            print()
+        return True
+    
+    def room_inventory(game, list_of_words, number_of_parameters):
+        # If the number of parameters is incorrect, print an error message and return False.
+        l = len(list_of_words)
+        if l != number_of_parameters + 1:
+            command_word = list_of_words[0]
+            print(MSG0.format(command_word=command_word))
+            return False
+        
+        # Print the inventory of the room, or nothing if the room is empty
+        player = game.player
+        room = player.current_room
+        if not room.inventory:
+            print("\nil n'y a rien ici.")
+        else:
+            print("\nLa pièce contient :")
+            for values in room.inventory.values():
+                print("\t- " + str(values))
+            print()
+        return True
+    
+    def take(game, list_of_words, number_of_parameters):
+        # If the number of parameters is incorrect, print an error message and return False.
+        l = len(list_of_words)
+        if l != number_of_parameters + 1:
+            command_word = list_of_words[0]
+            print(MSG1.format(command_word=command_word))
+            return False
+        
+        player = game.player
+        room = player.current_room
+        obj = list_of_words[1]
+
+        # if the room is empty, print an error message
+        if not room.inventory:
+            print("Vous ne pouvez pas récupérer d'objet : la pièce est vide.")
+            return False
+        # if the name of the object isn't in the room, print an error message
+        elif not (obj in room.inventory.keys()):
+            print("L'objet '" +obj+ "' n'est pas présent dans la pièce.")
+            return False
+        # if the player's max weight limit is reach, print an error message
+        elif player.max_weight < (player.sum_weight() + Item.get_weight(room.inventory.get(obj))):
+            print("Vous ne pouvez pas récupérer 'objet '" +obj+ "' : votre inventaire est plein.")
+            return False
+        # else, take the object in the inventory
+        else:
+            player.inventory[obj] = room.inventory.pop(obj)
+            print("\nl'objet '"+ obj +"' est maintenant dans votre inventaire.")
+            return True
+        
+    def drop(game, list_of_words, number_of_parameters):
+        # If the number of parameters is incorrect, print an error message and return False.
+        l = len(list_of_words)
+        if l != number_of_parameters + 1:
+            command_word = list_of_words[0]
+            print(MSG1.format(command_word=command_word))
+            return False
+        
+        player = game.player
+        room = player.current_room
+        obj = list_of_words[1]
+
+        # if the inventory is empty, print an error message
+        if not player.inventory:
+            print("Vous ne pouvez pas déposer d'objets : votre inventaire est vide.")
+            return False
+        # if the name of the object isn't in the room, print an error message
+        elif not (obj in player.inventory.keys()):
+            print("L'objet '" +obj+ "' n'est pas présent dans votre inventaire.")
+            return False
+        # else, take the object in the inventory
+        else:
+            room.inventory[obj] = player.inventory.pop(obj)
+            print("\nl'objet '"+ obj +"' a été déposé dans la pièce.")
+            return True
