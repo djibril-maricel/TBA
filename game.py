@@ -29,6 +29,8 @@ class Game:
         self.commands["go"] = go
         history= Command("history", " : afficher l'historique des salles visitées", Actions.history, 0)
         self.commands["history"] = history
+        back=Command("back", "retourner à la salle précédente", Actions.back, 0)
+        self.commands["back"] = back
         
         # Setup rooms
 
@@ -65,7 +67,7 @@ class Game:
         salle_de_video_surveillance.exits = {"N" : pont_superieur, "E" : None, "S" : None, "O" : None, "U" : None, "D" : None}
         salle_des_machines.exits = {"N" : None, "E" : None, "S" : salle_des_serveurs, "O" : None, "U" : chambre, "D" : None}
         salle_des_serveurs.exits = {"N" : salle_des_machines, "E" : None, "S" : None, "O" : None, "U" : None, "D" : None}
-
+        
         # Setup player and starting room
 
         self.player = Player(input("\nEntrez votre nom: "))

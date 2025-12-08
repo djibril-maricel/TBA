@@ -73,7 +73,7 @@ class Actions:
         # Compare the direction with the list of directions acccepted
         directions = set(['N', 'E', 'S', 'O', 'U', 'D'])
         if not direction in directions :
-            print("\nLa direction '" +direction+ "' n'est pas valide.\n")
+            print(f"\nLa direction ' {direction} ' n'est pas valide.\n")
             return False
         
         # Move the player in the direction specified by the parameter.
@@ -160,6 +160,33 @@ class Actions:
         return True
     
     def history(game, list_of_words, number_of_parameters):
+
+        """
+        Print the list of previous rooms.
+        
+        Args:
+            game (Game): The game object.
+            list_of_words (list): The list of words in the command.
+            number_of_parameters (int): The number of parameters expected by the command.
+
+        Returns:
+            bool: True if the command was executed successfully, False otherwise.
+
+        Examples:
+
+        >>> from game import Game
+        >>> game = Game()
+        >>> game.setup()
+        >>> history(game, ["history"], 0)
+        True
+        >>> history(game, ["history", "N"], 0)
+        False
+        >>> history(game, ["history", "chambre"], 0)
+        False
+
+        """
+
+        
         # If the number of parameters is incorrect, print an error message and return False.
         l = len(list_of_words)
         if l != number_of_parameters + 1:
@@ -169,8 +196,51 @@ class Actions:
         
         # Print the history of the player.
         player = game.player
-        print("\nVoici l'historique des pièces visitées :")
-        for values in player.history:
-            print("\t- " + values.description)
-        print()
+        if not player.history:
+            print("\nVous n'avez visité aucune salle précédemment\n")
+            return False
+        else:
+            print("\nVoici l'historique des pièces visitées :")
+            for room in player.history :
+                print(f"\t- '{room.descripion}'")
+
+            print()
+            return True
+    
+    def back(game, list_of_words, number_of_parameters):
+
+        """
+        Print the list of previous rooms.
+        
+        Args:
+            game (Game): The game object.
+            list_of_words (list): The list of words in the command.
+            number_of_parameters (int): The number of parameters expected by the command.
+
+        Returns:
+            bool: True if the command was executed successfully, False otherwise.
+
+        """
+
+        # If the number of parameters is incorrect, print an error message and return False.
+        l = len(list_of_words)
+        if l != number_of_parameters + 1:
+            command_word = list_of_words[0]
+            print(MSG0.format(command_word=command_word))
+            return False
+        
+        # Move the player back to the previous room in history.
+        player = game.player
+        # If there is no previous room in history, print a message and return False.
+        if not player.history:
+            print("\nVous n'avez visité aucune salle précédemment.\n")
+            return False
+
+        # Pop the last visited room and set it as the current room.
+        previous_room = player.history.pop()
+        player.current_room = previous_room
+        print(player.current_room.get_long_description())
         return True
+        
+
+
