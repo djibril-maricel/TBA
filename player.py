@@ -30,10 +30,10 @@ class Player():
         self.current_room = None
         self.history = []
         self.inventory = {}
-        self.max_weight = 1000
+        self.max_weight = 10
     
     # Define the move method.
-    def move(self, direction):
+    def move(self, direction, game):
         # Get the next room from the exits dictionary of the current room.
         next_room = self.current_room.exits[direction]
 
@@ -46,7 +46,7 @@ class Player():
         
         self.history.append(self.current_room)
         self.current_room = next_room
-        print(self.current_room.get_long_description())
+        print(self.current_room.get_long_description(game))
         return True
 
     def sum_weight(self):

@@ -7,6 +7,7 @@ from player import Player
 from command import Command
 from actions import Actions
 from item import Item
+from character import Character
 
 class Game:
 
@@ -30,16 +31,18 @@ class Game:
         self.commands["go"] = go
         history= Command("history", " : afficher l'historique des salles visitées", Actions.history, 0)
         self.commands["history"] = history
-        back=Command("back", "retourner à la salle précédente", Actions.back, 0)
+        back =Command("back", "retourner à la salle précédente", Actions.back, 0)
         self.commands["back"] = back
-        check= Command("check", " : afficher l'inventaire du joueur", Actions.player_inventory, 0)
+        check = Command("check", " : afficher l'inventaire du joueur", Actions.check, 0)
         self.commands["check"] = check
-        look= Command("look", " : afficher Les objets présents dans la pièce", Actions.room_inventory, 0)
+        look = Command("look", " : afficher Les objets présents dans la pièce", Actions.look, 0)
         self.commands["look"] = look
-        take= Command("take", " : prendre un objet présent dans la pièce", Actions.take, 1)
+        take = Command("take", " <item> : prendre un objet présent dans la pièce", Actions.take, 1)
         self.commands["take"] = take
-        drop= Command("drop", " : reposer un objet dans la pièce", Actions.drop, 1)
+        drop = Command("drop", " <item> : reposer un objet dans la pièce", Actions.drop, 1)
         self.commands["drop"] = drop
+        talk = Command("talk", " <character> : parle à un personnage dans la pièce", Actions.talk, 1)
+        self.commands["talk"] = talk
         
         # Setup rooms
 
@@ -57,8 +60,8 @@ class Game:
         self.rooms.append(chambre)
         salle_de_bains = Room("Salle_de_bains", "dans votre salle de bains. vous avez à votre disposition une baignoire et un lavabo.")
         self.rooms.append(salle_de_bains)
-        chambre_John_Dupont = Room("Chambre_John_Dupont", "dans la chambre de John Dupont. Similaire à la vôtre, mais en plus grand et avec du mobilier en marbre.")
-        self.rooms.append(chambre_John_Dupont)
+        chambre_Luca_Lisai = Room("Chambre_John_Dupont", "dans la chambre de John Dupont. Similaire à la vôtre, mais en plus grand et avec du mobilier en marbre.")
+        self.rooms.append(chambre_Luca_Lisai)
         salle_des_machines = Room("Salle_des_machines", "dans la salle des machines. Il y a beaucoup de grosses machines et de gros tuyaux les reliant. Il y a une porte au fond.")
         self.rooms.append(salle_des_machines)
         salle_des_serveurs = Room("Salle_des_serveurs", "dans la salle des serveurs. Ces gigantesques machines contiennent les données qui vous intéressent.")
@@ -66,9 +69,9 @@ class Game:
 
         # Create exits for rooms
 
-        chambre.exits = {"N" : None, "E" : chambre_John_Dupont, "S" : salle_de_bains, "O" : None, "U" : salle_de_reception, "D" : salle_des_machines}
+        chambre.exits = {"N" : None, "E" : chambre_Luca_Lisai, "S" : salle_de_bains, "O" : None, "U" : salle_de_reception, "D" : salle_des_machines}
         salle_de_bains.exits = {"N" : chambre, "E" : None, "S" : None, "O" : None, "U" : None, "D" : None}
-        chambre_John_Dupont.exits = {"N" : None, "E" : None, "S" : None, "O" : chambre, "U" : None, "D" : None}
+        chambre_Luca_Lisai.exits = {"N" : None, "E" : None, "S" : None, "O" : chambre, "U" : None, "D" : None}
         salle_de_reception.exits = {"N" : pont_exterieur, "E" : restaurant, "S" : None, "O" : None, "U" : pont_superieur, "D" : chambre}
         pont_exterieur.exits = {"N" : None, "E" : restaurant, "S" : None, "O" : salle_de_reception, "U" : None, "D" : None}
         restaurant.exits = {"N" : pont_exterieur, "E" : None, "S" : None, "O" : salle_de_reception, "U" : None, "D" : None}
@@ -79,8 +82,32 @@ class Game:
 
         # Create inventory for rooms
 
-        chambre.inventory = {"" : Item("téléphone", "pour rester joignable durant votre mission", 0.2),
-                              "trop_lourd" : Item("trop_lourd", "pour tester la limite de poids", 999.9)}
+        telephone = Item("téléphone", "pour rester joignable durant votre mission", 0.2)
+        chambre.inventory["téléphone"] = telephone
+        cle_USB = Item("clé_USB", "Les données à récupérer seront stockées dessus", 0.01)
+        chambre.inventory["clé_USB"] = cle_USB
+        menu_du_restaurant = Item("menu du restaurant", "On y voit tous les plats beaucoup trop chers à la carte ce soir", 0.2)
+        restaurant.inventory["menu_du_restaurant"] = menu_du_restaurant
+        sachet_de_poudre_blanche = Item("sachet de poudre blanche", "Une poudre très prisée dans ce genre d'événement", 0.02)
+        salle_de_reception.inventory["sachet de poudre blanche"] = sachet_de_poudre_blanche
+        cle_de_session = Item("clé de session", "Permet de se connecter à la session de Luca Lisai dans la salle des serveurs", 0.01)
+        chambre_Luca_Lisai.inventory["clé de session"] = cle_de_session
+        
+        # Create characters for rooms
+
+        Axelle = Character("Axelle", "Jeune femme prête à tout pour réussir", salle_de_reception, ["Hey ! tu passes une bonne soirée ?", "Ma robe Channel ne coûte que 2000€, je suis trop pauvre !"])
+        salle_de_reception.characters["Axelle"] = Axelle
+        Anaëlle = Character("Anaëlle", "Excellente cuisinière, cheffe du restaurant", restaurant, ["Hey, qu'est-ce qui te ferait plaisir ce soir ?", "As-tu assez d'argent pour payer ce que je proposes ?"])
+        restaurant.characters["Anaëlle"] = Anaëlle
+        Mouhamadou = Character("Mouhamadou", "Jeune homme mystérieux contemplant les étoiles", pont_superieur, ["Quel bont vent vous amène, mon ami ?", "Y'a que la douleur qui ne ment pas quand tout le reste n'est que mensonge.", "Ma Rolex est rayé, il faut que je la change !"])
+        pont_superieur.characters["Mouhamadou"] = Mouhamadou
+        Luca_Lisai = Character("Luca_Lisai", "Milliardaire Parisien cupide et sans scrupules", pont_exterieur, ["Hé hé hé ! Les affaires marchent en ce moment !", "Regardez-moi tous ces pauvres !"])
+        pont_exterieur.characters["Luca_Lisai"] = Luca_Lisai
+        
+        # Create inventory for Characters
+
+        carte_de_chambre = Item("carte de chambre", "Permet d'accérer à la chambre de Luca Lisai", 0.01)
+        Luca_Lisai.inventory["carte de chambre"] = carte_de_chambre
 
         # Setup player and starting room
 
@@ -115,7 +142,13 @@ class Game:
         # If the command is recognized, execute it
         else:
             command = self.commands[command_word]
-            command.action(self, list_of_words, command.number_of_parameters)
+            res = command.action(self, list_of_words, command.number_of_parameters)
+            if command_word in ("go", "back") and res:
+                all_characters = []
+                for room in self.rooms:
+                    all_characters.extend(room.characters.values())
+                for c in all_characters:
+                    c.move()
 
     # Print the welcome message
     def print_welcome(self):
@@ -123,10 +156,11 @@ class Game:
               \nVous êtes invité à la grande réception qui se tient ce soir dans la salle de réception.\
               \nIl s'y trouve quelques milliardaires et des ministres des deux villes que relient ce paquebot : Paris et Londres.\
               \nVotre objectif est de vous rendre dans la salle des machines, et de télécharger des données concernant un complot entre \
-              \nle milliardaire parisien John Dupont et le 1er ministre du Royaume-uni sans vous faire repérer. Bonne chance !")
+              \nle milliardaire parisien Luca Lisai et le 1er ministre du Royaume-uni sans vous faire repérer. Bonne chance !")
         print("Entrez 'help' si vous avez besoin d'aide.")
         #
-        print(self.player.current_room.get_long_description())
+        print(self.player.current_room.get_long_description(self))
+
     
 
 def main():

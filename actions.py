@@ -58,7 +58,7 @@ class Actions:
         direction = list_of_words[1]
         # match the upper of direction to put the 1st letter of the direction
         match direction.upper():
-            case ("N" | "NORD"):
+            case "N" | "NORD":
                 direction = "N"
             case "S" | "SUD":
                 direction =  "S"
@@ -78,7 +78,7 @@ class Actions:
             return False
         
         # Move the player in the direction specified by the parameter.
-        player.move(direction)
+        player.move(direction, game)
         return True
 
     def quit(game, list_of_words, number_of_parameters):
@@ -203,11 +203,48 @@ class Actions:
         else:
             print("\nVoici l'historique des pièces visitées :")
             for room in player.history :
-                print(f"\t- '{room.descripion}'")
+                print(f"\t- '{room.description}'")
 
             print()
             return True
-    
+        
+    def get_history(game):
+
+        """
+        return a string with the list of previous rooms.
+        
+        Args:
+            game (Game): The game object.
+            list_of_words (list): The list of words in the command.
+            number_of_parameters (int): The number of parameters expected by the command.
+
+        Returns:
+            string: the list of previous rooms
+
+        Examples:
+
+        >>> from game import Game
+        >>> game = Game()
+        >>> game.setup()
+        >>> history(game)
+        True
+        >>> history(game, ["history", "N"], 0)
+        False
+        >>> history(game, ["history", "chambre"], 0)
+        False
+
+        """
+        
+        # Print the history of the player.
+        player = game.player
+        if not player.history:
+            return "Vous n'avez visité aucune salle précédemment."
+        
+        text = "Historique des pièces visitées :\n"
+        for room in player.history:
+            text += f"- {room.description}\n"
+        return text
+        
     def back(game, list_of_words, number_of_parameters):
 
         """
@@ -240,10 +277,10 @@ class Actions:
         # Pop the last visited room and set it as the current room.
         previous_room = player.history.pop()
         player.current_room = previous_room
-        print(player.current_room.get_long_description())
+        print(player.current_room.get_long_description(game))
         return True
     
-    def player_inventory(game, list_of_words, number_of_parameters):
+    def check(game, list_of_words, number_of_parameters):
         # If the number of parameters is incorrect, print an error message and return False.
         l = len(list_of_words)
         if l != number_of_parameters + 1:
@@ -262,7 +299,7 @@ class Actions:
             print()
         return True
     
-    def room_inventory(game, list_of_words, number_of_parameters):
+    def look(game, list_of_words, number_of_parameters):
         # If the number of parameters is incorrect, print an error message and return False.
         l = len(list_of_words)
         if l != number_of_parameters + 1:
@@ -273,11 +310,13 @@ class Actions:
         # Print the inventory of the room, or nothing if the room is empty
         player = game.player
         room = player.current_room
-        if not room.inventory:
+        if not room.inventory and not room.characters:
             print("\nil n'y a rien ici.")
         else:
             print("\nLa pièce contient :")
             for values in room.inventory.values():
+                print("\t- " + str(values))
+            for values in room.characters.values():
                 print("\t- " + str(values))
             print()
         return True
@@ -338,5 +377,23 @@ class Actions:
             print("\nl'objet '"+ obj +"' a été déposé dans la pièce.")
             return True
         
+    def talk(game, list_of_words, number_of_parameters):
+        # If the number of parameters is incorrect, print an error message and return False.
+        l = len(list_of_words)
+        if l != number_of_parameters + 1:
+            command_word = list_of_words[0]
+            print(MSG1.format(command_word=command_word))
+            return False
+        
+        player = game.player
+        room = player.current_room
+        character = list_of_words[1]
 
-
+        # if the name of the character isn't in the room, print an error message
+        if not (character in room.characters.keys()):
+            print("Le personnage '" +character+ "' n'est pas présent dans la pièce.")
+            return False
+        # else, take the object in the inventory
+        else:
+            print(room.characters[character].get_msg())
+            return True

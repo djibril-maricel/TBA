@@ -1,5 +1,6 @@
 # Define the Room class.
 
+from actions import Actions
 class Room:
     """
     This class represents a room. A room is composed of a command word, a help string, an action and a number of parameters.
@@ -35,6 +36,7 @@ class Room:
         self.description = description
         self.exits = {}
         self.inventory = {}
+        self.characters = {}
     
     # Define the get_exit method.
     def get_exit(self, direction):
@@ -55,5 +57,5 @@ class Room:
         return exit_string
 
     # Return a long description of this room including exits.
-    def get_long_description(self):
-        return f"\nVous êtes {self.description}\n\n{self.get_exit_string()}\n"
+    def get_long_description(self, game):
+        return f"\nVous êtes {self.description}\n\n{self.get_exit_string()}\n\n{Actions.get_history(game)}\n"
