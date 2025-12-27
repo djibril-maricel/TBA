@@ -49,6 +49,8 @@ class Player():
         self.inventory = {}
         self.max_weight = 10
         self.move_count = 0
+        self.collect_count = 0
+        self.characters_interracted = []
         self.quest_manager = QuestManager(self)
         self.rewards = []  # List to store earned rewards
     

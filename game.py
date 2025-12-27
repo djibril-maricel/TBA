@@ -35,7 +35,7 @@ class Game:
         history= Command("history", " : afficher l'historique des salles visitées", Actions.history, 0)
         self.commands["history"] = history
 
-        back =Command("back", "retourner à la salle précédente", Actions.back, 0)
+        back =Command("back", " : retourner à la salle précédente", Actions.back, 0)
         self.commands["back"] = back
 
         check = Command("check", " : afficher l'inventaire du joueur", Actions.check, 0)
@@ -52,6 +52,18 @@ class Game:
 
         talk = Command("talk", " <character> : parle à un personnage dans la pièce", Actions.talk, 1)
         self.commands["talk"] = talk
+
+        quests = Command("quests", " : afficher la liste des quêtes", Actions.quests, 0)
+        self.commands["quests"] = quests
+        
+        quest = Command("quest", " <titre> : afficher les détails d'une quête", Actions.quest, 1)
+        self.commands["quest"] = quest
+        
+        activate = Command("activate", " <titre> : activer une quête", Actions.activate, 1)
+        self.commands["activate"] = activate
+
+        rewards = Command("rewards", " : afficher vos récompenses", Actions.rewards, 0)
+        self.commands["rewards"] = rewards
         
         
         # Setup rooms
@@ -81,7 +93,7 @@ class Game:
         self.rooms.append(restaurant)
 
         chambre = Room("Chambre", 
-                       "dans votre chambre. Quelques affaires sont posés au pied de votre lit et dans vos rangements."
+                       "dans votre chambre. Quelques affaires sont posées au pied de votre lit et dans vos rangements."
         )
         self.rooms.append(chambre)
 
@@ -171,6 +183,11 @@ class Game:
         Luca_Lisai.inventory["carte_de_chambre"] = carte_de_chambre
 
 
+        # Setup player and starting room
+        self.player = Player(input("\nEntrez votre nom: "))
+        self.player.current_room = chambre
+
+
         # Setup quests
         exploration_quest = Quest(
             title="Grand Explorateur",
@@ -197,8 +214,8 @@ class Game:
 
         items_quest = Quest(
             title="Collectionneur",
-            description="Récupérez 5 objets dans ce paquebot",
-            objectives=["Récupérer 5 objets"],
+            description="Ramassez 5 objets dans ce paquebot",
+            objectives=["Ramasser 5 objets"],
             reward="Titre de collectionneur"
         )
 
@@ -230,6 +247,13 @@ class Game:
             reward="Titre de beau parleur"
         )
 
+        interactions_quest = Quest(
+            title="Grand Bavard",
+            description="Discutez avec 3 personnages différents",
+            objectives=["Parler à 3 personnages différents"],
+            reward="Médaille de grand bavard"
+        )
+
         # Add quests to player's quest manager
         self.player.quest_manager.add_quest(exploration_quest)
         self.player.quest_manager.add_quest(travel_quest)
@@ -238,11 +262,7 @@ class Game:
         self.player.quest_manager.add_quest(item1_quest)
         self.player.quest_manager.add_quest(item2_quest)
         self.player.quest_manager.add_quest(interaction1_quest)
-
-
-        # Setup player and starting room
-        self.player = Player(input("\nEntrez votre nom: "))
-        self.player.current_room = chambre
+        self.player.quest_manager.add_quest(interactions_quest)
 
 
     # Play the game

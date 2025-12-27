@@ -246,7 +246,7 @@ class Actions:
         else:
             print("\nVoici l'historique des pièces visitées :")
             for room in player.history :
-                print(f"\t- '{room.description}'")
+                print(f"\t- {room.description}")
 
             print()
             return True
@@ -286,7 +286,7 @@ class Actions:
         
         text = "Historique des pièces visitées :\n"
         for room in player.history:
-            text += f"- {room.description}\n"
+            text += f"\t- {room.description}\n"
         return text
         
     @staticmethod
@@ -397,6 +397,14 @@ class Actions:
         else:
             player.inventory[obj] = room.inventory.pop(obj)
             print("\nl'objet '"+ obj +"' est maintenant dans votre inventaire.")
+
+            # check item objectives
+            player.quest_manager.check_item_objectives(obj)
+
+            # increment collect counter and check collect objectives
+            player.collect_count += 1
+            player.quest_manager.check_counter_objectives("Ramasser", player.collect_count)
+
             return True
 
     @staticmethod 
@@ -446,6 +454,15 @@ class Actions:
         # else, take the object in the inventory
         else:
             print(room.characters[character].get_msg())
+
+            # check character objectives
+            player.quest_manager.check_character_objectives(character)
+
+            # add character at characters interracted list and check interract objectives
+            if character not in player.characters_interracted:
+                player.characters_interracted.append(character)
+            player.quest_manager.check_counter_objectives("Parler à", len(player.characters_interracted))
+
             return True
         
     @staticmethod
@@ -540,7 +557,9 @@ class Actions:
 
         # Prepare current counter values to show progress
         current_counts = {
-            "Se déplacer": game.player.move_count
+            "Se déplacer": game.player.move_count,
+            "Ramasser": game.player.collect_count,
+            "Parler à": len(game.player.characters_interracted)
         }
 
         # Show quest details
