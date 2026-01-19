@@ -2,6 +2,7 @@
 
 from item import Item
 from quest import QuestManager
+from debug import DEBUG
 
 class Player():
     """
@@ -47,7 +48,7 @@ class Player():
         self.current_room = None
         self.history = []
         self.inventory = {}
-        self.max_weight = 10
+        self.max_weight = 1.02
         self.move_count = 0
         self.collect_count = 0
         self.characters_interracted = []
@@ -106,8 +107,13 @@ class Player():
             print("\nAucune porte dans cette direction !\n")
             return False
         
+        # vérifier si la pièce est une des deux pièces verrouillées, et si oui, ne laisser passer le joueur que si il possède le bon objet
+        if next_room.name == "Chambre_Luca_Lisai":
+            if not "carte_de_chambre" in self.inventory:
+                print("\nVous ne pouvez pas encore vous rendre dans la chambre de Luca Lisai : il vous manque la clé de chambre de Luca Lisai\n")
+                return False
+            
         # Set the current room to the next room.
-        
         self.history.append(self.current_room)
         self.current_room = next_room
         print(self.current_room.get_long_description(game))

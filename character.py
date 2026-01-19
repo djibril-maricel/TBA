@@ -1,5 +1,5 @@
 from random import choice
-from room import Room
+from debug import DEBUG
 
 class Character:
     """

@@ -1,3 +1,5 @@
+from debug import DEBUG
+
 class Item():
     """
     docstring à faire

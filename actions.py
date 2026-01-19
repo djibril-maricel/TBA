@@ -16,6 +16,7 @@ MSG0 = "\nLa commande '{command_word}' ne prend pas de paramètre.\n"
 # The MSG1 variable is used when the command takes 1 parameter.
 MSG1 = "\nLa commande '{command_word}' prend 1 seul paramètre.\n"
 from item import Item
+from debug import DEBUG
 
 class Actions:
     """
@@ -452,18 +453,22 @@ class Actions:
             print("Le personnage '" +character+ "' n'est pas présent dans la pièce.")
             return False
         # else, take the object in the inventory
+        elif character == "Luca_Lisai" and "batte_de_baseball" in player.inventory.keys():
+            room.inventory["carte_de_chambre"] = room.characters['Luca_Lisai'].inventory.pop("carte_de_chambre")
+            del room.characters['Luca_Lisai']
+            print("Vous avez assommé Luca Lisai ! quelque chose est tombé de sa poche et se trouve maintenant dans la pièce.")
         else:
             print(room.characters[character].get_msg())
 
-            # check character objectives
-            player.quest_manager.check_character_objectives(character)
+        # check character objectives
+        player.quest_manager.check_character_objectives(character)
 
-            # add character at characters interracted list and check interract objectives
-            if character not in player.characters_interracted:
-                player.characters_interracted.append(character)
-            player.quest_manager.check_counter_objectives("Parler à", len(player.characters_interracted))
+        # add character at characters interracted list and check interract objectives
+        if character not in player.characters_interracted:
+            player.characters_interracted.append(character)
+        player.quest_manager.check_counter_objectives("Parler à", len(player.characters_interracted))
 
-            return True
+        return True
         
     @staticmethod
     def quests(game, list_of_words, number_of_parameters):
@@ -606,9 +611,36 @@ class Actions:
 
         # Get the quest title from the list of words (join all words after command)
         quest_title = " ".join(list_of_words[1:])
+        quest_title = quest_title.split("<", 1)[0].strip()
 
-        # Try to activate the quest
-        if game.player.quest_manager.activate_quest(quest_title):
+        # try to activate all quests
+        if quest_title == "all":
+            activated_any = False
+            for quest in game.player.quest_manager.quests:
+                quest_name = quest.title.split("<", 1)[0].strip()
+                if game.player.quest_manager.activate_quest(quest_name):
+                    activated_any = True
+            if not activated_any:
+                print("Toutes les quêtes ont déjà été activées.")
+                return False
+            
+            return True
+            
+        # try to activate all main quests
+        elif quest_title == "all_principales":
+            activated_any = False
+            for quest in game.player.quest_manager.quests:
+                if "<quête principale>" in quest.title:
+                    quest_name = quest.title.split("<", 1)[0].strip()
+                    if game.player.quest_manager.activate_quest(quest_name):
+                        activated_any = True
+            if not activated_any:
+                print("Toutes les quêtes principales ont déjà été activées.")
+                return False
+            return True
+
+        # Try to activate the quest by its name
+        elif game.player.quest_manager.activate_quest(quest_title):
             return True
 
         msg1 = f"\nImpossible d'activer la quête '{quest_title}'. "

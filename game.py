@@ -9,6 +9,7 @@ from actions import Actions
 from item import Item
 from character import Character
 from quest import Quest
+from debug import DEBUG
 
 class Game:
 
@@ -68,7 +69,7 @@ class Game:
         
         # Setup rooms
         pont_superieur = Room("Pont_superieur",
-                               "sur le pont supérieur. D'ici, vous pouvez contempler la nuit étoilée et la plaine lune."
+                               "sur le pont supérieur. D'ici, vous pouvez contempler la nuit étoilée et la pleine lune."
         )
         self.rooms.append(pont_superieur)
 
@@ -135,13 +136,16 @@ class Game:
         telephone = Item("téléphone", "pour rester joignable durant votre mission", 0.2)
         chambre.inventory["téléphone"] = telephone
 
+        batte = Item("batte_de_baseball", "peut servir d'arme pour assommer quelqu'un", 1.0)
+        salle_de_video_surveillance.inventory["batte_de_baseball"] = batte
+
         cle_USB = Item("clé_USB", "Les données à récupérer seront stockées dessus", 0.01)
         chambre.inventory["clé_USB"] = cle_USB
 
         menu_du_restaurant = Item("menu_du_restaurant", "On y voit tous les plats beaucoup trop chers à la carte ce soir", 0.2)
         restaurant.inventory["menu_du_restaurant"] = menu_du_restaurant
 
-        sachet_de_poudre_blanche = Item("sachet_de_poudre_blanche", "Une poudre très prisée dans ce genre d'événement", 0.02)
+        sachet_de_poudre_blanche = Item("sachet_de_poudre_blanche", "Une poudre très prisée dans ce genre d'événement", 0.05)
         salle_de_reception.inventory["sachet_de_poudre_blanche"] = sachet_de_poudre_blanche
 
         cle_de_session = Item("clé_de_session", "Permet de se connecter à la session de Luca Lisai dans la salle des serveurs", 0.01)
@@ -190,7 +194,7 @@ class Game:
 
         # Setup quests
         exploration_quest = Quest(
-            title="Grand Explorateur",
+            title="Grand Explorateur <quête secondaire>",
             description="Explorez toutes les salles de ce paquebot luxueux.",
             objectives=["Visiter Pont_superieur"
                         , "Visiter Salle_de_video_surveillance"
@@ -206,64 +210,80 @@ class Game:
         )
 
         travel_quest = Quest(
-            title="Grand Voyageur",
+            title="Grand Voyageur <quête secondaire>",
             description="Déplacez-vous 10 fois entre les lieux.",
             objectives=["Se déplacer 10 fois"],
             reward="Bottes de voyageur"
         )
 
         items_quest = Quest(
-            title="Collectionneur",
-            description="Ramassez 5 objets dans ce paquebot",
-            objectives=["Ramasser 5 objets"],
+            title="Collectionneur <quête secondaire>",
+            description="Ramassez 3 objets dans ce paquebot.",
+            objectives=["Ramasser 3 objets"],
             reward="Titre de collectionneur"
         )
 
-        discovery_quest = Quest(
-            title="Infiltrateur en herbe",
-            description="Atteignez la salle où se trouvent les données que vous convoitez.",
-            objectives=["Visiter Salle_des_serveurs"],
-            reward="Clé dorée"
+        interactions_quest = Quest(
+            title="Grand Bavard <quête secondaire>",
+            description="Discutez avec 3 personnages différents.",
+            objectives=["Parler à 3 personnages différents"],
+            reward="Médaille de grand bavard"
+        )
+
+        interaction1_quest = Quest(
+            title="Beau parleur <quête principale>",
+            description="Interragissez avec votre cible : Luca Lisai",
+            objectives=["Parler à Luca_Lisai"],
+            reward="Titre de beau parleur"
+        )
+
+        batte_quest = Quest(
+            title="En voilà une arme ! <quête principale>",
+            description="Récupérez la batte de baseball située dans la salle de vidéo-surveillance.",
+            objectives=["Récupérer batte_de_baseball"],
+            reward="Gants d'assassin"
         )
 
         item1_quest = Quest(
-            title="Dérobeur amateur",
+            title="Dérobeur amateur <quête principale>",
             description="Récupérez la carte de chambre permettant de se rendre dans la chambre de Luca Lisai",
             objectives=["Récupérer carte_de_chambre"],
             reward="Titre de dérobeur amateur"
         )
 
         item2_quest = Quest(
-            title="Dérobeur professionnel",
+            title="Dérobeur professionnel <quête principale>",
             description="Récupérez la clé de session permettant de se connecter à la session de Luca Lisai",
             objectives=["Récupérer clé_de_session"],
             reward="médaille de dérobeur professionnel"
         )
 
-        interaction1_quest = Quest(
-            title="Beau parleur",
-            description="Interragissez avec votre cible : Luca Lisai",
-            objectives=["Parler à Luca_Lisai"],
-            reward="Titre de beau parleur"
+        discovery_quest = Quest(
+            title="Mission accomplie ! <quête principale>",
+            description="Atteignez la salle où se trouvent les données que vous convoitez.",
+            objectives=["Visiter Salle_des_serveurs"],
+            reward="Clé dorée"
         )
 
-        interactions_quest = Quest(
-            title="Grand Bavard",
-            description="Discutez avec 3 personnages différents",
-            objectives=["Parler à 3 personnages différents"],
-            reward="Médaille de grand bavard"
+
+        travel_quest = Quest(
+            title="Grand Voyageur <quête secondaire>",
+            description="Déplacez-vous 10 fois entre les lieux.",
+            objectives=["Se déplacer 10 fois"],
+            reward="Bottes de voyageur"
         )
 
         # Add quests to player's quest manager
         self.player.quest_manager.add_quest(exploration_quest)
         self.player.quest_manager.add_quest(travel_quest)
         self.player.quest_manager.add_quest(items_quest)
+        self.player.quest_manager.add_quest(interactions_quest)
         self.player.quest_manager.add_quest(discovery_quest)
         self.player.quest_manager.add_quest(item1_quest)
         self.player.quest_manager.add_quest(item2_quest)
         self.player.quest_manager.add_quest(interaction1_quest)
-        self.player.quest_manager.add_quest(interactions_quest)
-
+        self.player.quest_manager.add_quest(batte_quest)
+        
 
     # Play the game
     def play(self):
@@ -303,6 +323,8 @@ class Game:
                     all_characters.extend(room.characters.values())
                 for c in all_characters:
                     c.move()
+            if not self.lose():
+                self.win()
 
     # Print the welcome message
     def print_welcome(self):
@@ -311,13 +333,40 @@ class Game:
         print(f"\nBienvenue {self.player.name} dans ce jeu d'espionnage !\
               \nVous êtes invité à la grande réception qui se tient ce soir dans la salle de réception.\
               \nIl s'y trouve quelques milliardaires et des ministres des deux villes que relient ce paquebot : Paris et Londres.\
-              \nVotre objectif est de vous rendre dans la salle des machines, et de télécharger des données concernant un complot entre \
-              \nle milliardaire parisien Luca Lisai et le 1er ministre du Royaume-uni sans vous faire repérer. Bonne chance !")
+              \nVotre objectif est de vous rendre dans la salle des machines avec la clé de session de votre cible, et de télécharger des données\
+              \nconcernant un complot entre le milliardaire parisien Luca Lisai et le 1er ministre du Royaume-uni sans vous faire repérer.\
+              \nAttention à ne pas vous rendre dans la salle des serveurs sans la clé de session de votre cible, ou bien vous aurez perdu. Bonne chance !")
         print("Entrez 'help' si vous avez besoin d'aide.")
         #
         print(self.player.current_room.get_long_description(self))
 
-    
+    def win(self):
+        # Si il reste une quête principale non terminé, le jeu ne s'arrête pas
+        if any(
+            "<quête principale>" in quest.title and not quest.is_completed
+            for quest in self.player.quest_manager.quests
+        ):
+            return False
+        
+        # Afficher un message de victoire, puis attendre un imput du joueur avant de finir le jeu et quitter
+        print("🎉​ Vous avez réussi ! Vous avez accompli votre mission !\n" \
+        "Grâce aux données que vous avez récupérées, vous allez pouvoir exposer les plans machiavéliques de Luca Lisai !\n" \
+        "Merci beaucoup d'être allé au bout de ce jeu !\n\n")
+        input("Appuyez sur entrée pour quitter.")
+        self.finished = True
+        return True
+
+    def lose(self):
+        if self.player.current_room.name == "Salle_des_serveurs" and not "clé_de_session" in self.player.inventory:
+            print("Malheureusement, vous n'avez pas la clé de session de Luca_Lisai sur vous, ce qui a déclenché l'alarme !\n" \
+            "La sécurité vous a attrapé, et votre couverture d'espion a été découverte.\n" \
+            "Vous avez échoué à votre mission. Vous ferez mieux la prochaine fois !\n\n")
+            input("Appuyer sur entrée pour quitter.")
+            self.finished = True
+            return True
+        return False
+
+        
 
 def main():
     """Create a game object and play the game"""

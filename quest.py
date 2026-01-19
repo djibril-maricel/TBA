@@ -1,3 +1,4 @@
+from debug import DEBUG
 """ Define the Quest class"""
 
 class Quest:
@@ -528,7 +529,10 @@ class QuestManager:
         False
         """
         for quest in self.quests:
-            if quest.title == quest_title and not quest.is_active:
+            # On enlève la partie du nom de la quête contenue entre <> pour ne comparer que le nom réel de la quête à ce qu'a renseigné le joueur
+            # (cela évite au joueur de renseigner dans la commande quest ce qui est entre <> en argument de la fonction)
+            quest_split = quest.title.split("<", 1)[0].strip()
+            if quest_split == quest_title and not quest.is_active:
                 quest.activate()
                 self.active_quests.append(quest)
                 return True
@@ -809,7 +813,10 @@ class QuestManager:
         True
         """
         for quest in self.quests:
-            if quest.title == title:
+            # On enlève la partie du nom de la quête contenue entre <> pour ne comparer que le nom réel de la quête à ce qu'a renseigné le joueur
+            # (cela évite au joueur de renseigner dans la commande quest ce qui est entre <> en argument de la fonction)
+            quest_split = quest.title.split("<", 1)[0].strip()
+            if quest_split == title:
                 return quest
         return None
 

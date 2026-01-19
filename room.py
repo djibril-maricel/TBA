@@ -1,6 +1,7 @@
 # Define the Room class.
 
 from actions import Actions
+from debug import DEBUG
 class Room:
     """
     This class represents a room. A room is composed of a command word, a help string, an action and a number of parameters.

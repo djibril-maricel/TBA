@@ -1,4 +1,4 @@
-"""This file contains the Command class"""
+from debug import DEBUG
 
 class Command:
     """
