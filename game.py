@@ -30,7 +30,7 @@ class Game:
         quit = Command("quit", " : quitter le jeu", Actions.quit, 0)
         self.commands["quit"] = quit
 
-        go = Command("go", " <direction> : se déplacer dans une direction cardinale (N, E, S, O)", Actions.go, 1)
+        go = Command("go", " <direction> : se déplacer dans une direction cardinale, monter ou descendre (N, E, S, O, U, D)", Actions.go, 1)
         self.commands["go"] = go
 
         history= Command("history", " : afficher l'historique des salles visitées", Actions.history, 0)
@@ -42,7 +42,7 @@ class Game:
         check = Command("check", " : afficher l'inventaire du joueur", Actions.check, 0)
         self.commands["check"] = check
 
-        look = Command("look", " : afficher Les objets présents dans la pièce", Actions.look, 0)
+        look = Command("look", " : afficher les objets présents dans la pièce", Actions.look, 0)
         self.commands["look"] = look
 
         take = Command("take", " <item> : prendre un objet présent dans la pièce", Actions.take, 1)
@@ -51,7 +51,7 @@ class Game:
         drop = Command("drop", " <item> : reposer un objet dans la pièce", Actions.drop, 1)
         self.commands["drop"] = drop
 
-        talk = Command("talk", " <character> : parle à un personnage dans la pièce", Actions.talk, 1)
+        talk = Command("talk", " <character> : parler à un personnage dans la pièce", Actions.talk, 1)
         self.commands["talk"] = talk
 
         quests = Command("quests", " : afficher la liste des quêtes", Actions.quests, 0)
@@ -109,7 +109,7 @@ class Game:
         self.rooms.append(chambre_Luca_Lisai)
 
         salle_des_machines = Room("Salle_des_machines", 
-                                  "dans la salle des machines. Il y a beaucoup de grosses machines et de gros tuyaux les reliant. Il y a une porte au fond."
+                                  "dans la salle des machines. Il y a beaucoup de grosses machines et de gros tuyaux les reliant. La salle des serveurs se trouve au fond."
         )
         self.rooms.append(salle_des_machines)
 
@@ -333,7 +333,7 @@ class Game:
         print(f"\nBienvenue {self.player.name} dans ce jeu d'espionnage !\
               \nVous êtes invité à la grande réception qui se tient ce soir dans la salle de réception.\
               \nIl s'y trouve quelques milliardaires et des ministres des deux villes que relient ce paquebot : Paris et Londres.\
-              \nVotre objectif est de vous rendre dans la salle des machines avec la clé de session de votre cible, et de télécharger des données\
+              \nVotre objectif est de vous rendre dans la salle des serveurs avec la clé de session de votre cible, et de télécharger des données\
               \nconcernant un complot entre le milliardaire parisien Luca Lisai et le 1er ministre du Royaume-uni sans vous faire repérer.\
               \nAttention à ne pas vous rendre dans la salle des serveurs sans la clé de session de votre cible, ou bien vous aurez perdu. Bonne chance !")
         print("Entrez 'help' si vous avez besoin d'aide.")
